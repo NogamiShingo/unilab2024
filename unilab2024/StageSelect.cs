@@ -63,13 +63,23 @@ namespace unilab2024
                         {
                             button.Text = j + "科目め";
                         }
-                        else if (_worldNumber == 4)
+                        else if (_worldNumber == 4 || _worldNumber == 8)
                         {
                             switch (j)
                             {
                                 case 1:
-                                    button.Location = new Point(643, 600);
-                                    button.Text = "卒業試験";
+                                    switch (_worldNumber)
+                                    {
+                                        case 4:
+                                            button.Location = new Point(643, 600);
+                                            button.Text = "卒業試験";
+                                            break;
+                                        case 8:
+                                            button.Size = new Size(400, 80);
+                                            button.Location = new Point(568, 600);
+                                            button.Text = "ドラゴン退治";
+                                            break;
+                                    }
                                     break;
                                 case 2:
                                 case 3:
@@ -121,6 +131,9 @@ namespace unilab2024
                                 case 7:
                                     itemName = "Watch";
                                     break;
+                                case 8:
+                                    itemName = "Dragon";
+                                    break;
                                 default :
                                     break;
                             }
@@ -137,12 +150,13 @@ namespace unilab2024
                     {
                         bool isWorldMap = true;
                         if (_worldNumber >= 5) isWorldMap = false;
-                        if (!ClearCheck.IsCleared[1, 0])
-                        {
-                            button.Enabled = false;
-                            button.Visible = false;
-                        }
-                        else if (Func.HasNewStageFromStageSelect(isWorldMap, _worldNumber))
+                        //理工展仕様
+                        //if (!ClearCheck.IsCleared[1, 0])
+                        //{
+                        //    button.Enabled = false;
+                        //    button.Visible = false;
+                        //}
+                        if (Func.HasNewStageFromStageSelect(isWorldMap, _worldNumber))
                         {
                             button.ConditionImage = Dictionaries.Img_Button["New"];
                         }
@@ -152,9 +166,19 @@ namespace unilab2024
 
             Func.ChangeControl(pictureBox_Conv, false);
 
-            if (ClearCheck.IsNew[2, 1] && _worldNumber == 1)
+            //理工展仕様
+            if (ClearCheck.PlayBeforeFirstStage)
             {
-                string convFileName = "Story_AfterChapter1-StageSelect.csv";
+                ClearCheck.PlayBeforeFirstStage = false;
+                string convFileName = "Story_AfterChapter1-0StageSelect.csv";
+                Conversations = Func.LoadConversations(convFileName);
+                await Task.Delay((int)ConstNum.waitTime_Load);
+                Capt = Func.PlayConv(this, pictureBox_Conv, Conversations);
+            }
+            else if (ClearCheck.PlayAfterFirstStage)
+            {
+                ClearCheck.PlayAfterFirstStage = false;
+                string convFileName = "Story_AfterChapter1-1StageSelect.csv";
                 Conversations = Func.LoadConversations(convFileName);
                 await Task.Delay((int)ConstNum.waitTime_Load);
                 Capt = Func.PlayConv(this, pictureBox_Conv, Conversations);
@@ -231,6 +255,11 @@ namespace unilab2024
                             ClearCheck.IsNew[i, j] = true;
                         }
                     }
+                }
+                else if( _worldNumber == 8)
+                {
+                    ClearCheck.Completed = true;
+                    ClearCheck.PlayAfterAnotherWorldStory = true;
                 }
 
                 Func.CreateStageSelect(this,_worldName, _worldNumber);

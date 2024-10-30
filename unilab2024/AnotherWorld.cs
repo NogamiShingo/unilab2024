@@ -58,44 +58,62 @@ namespace unilab2024
                             {
                                 button.ConditionImage = null;
                             }
-
-                            string itemName = "";
-                            switch (i)
-                            {
-                                case 5:
-                                    itemName = "Snow";
-                                    break;
-                                case 6:
-                                    itemName = "Fruit";
-                                    break;
-                                case 7:
-                                    itemName = "Watch";
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                            bool flg = false;
-                            for (int j = 3; j > 0; j--)
-                            {
-                                if (ClearCheck.IsCleared[i, j])
-                                {
-                                    button.BackgroundImage = Dictionaries.Img_Button[itemName + j];
-                                    flg = true;
-                                    break;
-                                }
-                            }
-                            if (!flg)
-                            {
-                                button.BackgroundImage = Dictionaries.Img_Button[itemName + 0];
-                            }
-                            button.BackgroundImageLayout = ImageLayout.Zoom;
                         }
                         else
                         {
                             button.ForeImage = Dictionaries.Img_Button["Lock"];
                             button.Cursor = Cursors.No;
                         }
+
+                        string itemName = "";
+                        switch (i)
+                        {
+                            case 5:
+                                itemName = "Snow";
+                                break;
+                            case 6:
+                                itemName = "Fruit";
+                                break;
+                            case 7:
+                                itemName = "Watch";
+                                break;
+                            case 8:
+                                itemName = "Dragon";
+                                break;
+                            default:
+                                break;
+                        }
+
+                        switch (i)
+                        {
+                            case 5:
+                            case 6:
+                            case 7:
+                                bool flg = false;
+                                for (int j = 3; j > 0; j--)
+                                {
+                                    if (ClearCheck.IsCleared[i, j])
+                                    {
+                                        button.BackgroundImage = Dictionaries.Img_Button[itemName + j];
+                                        flg = true;
+                                        break;
+                                    }
+                                }
+                                if (!flg)
+                                {
+                                    button.BackgroundImage = Dictionaries.Img_Button[itemName + 0];
+                                }
+                                break;
+                            case 8:
+                                if (!ClearCheck.IsCleared[i, 0])
+                                {
+                                    itemName += "Gray";
+                                }
+                                button.BackgroundImage = Dictionaries.Img_Button[itemName];
+                                break;
+
+                        }
+                        button.BackgroundImageLayout = ImageLayout.Zoom;
                     }
                     else if (NameWithoutButton == "ToWorldMap")
                     {
@@ -125,6 +143,14 @@ namespace unilab2024
             {
                 ClearCheck.PlayAfterChapter4Story = false;
                 string convFileName = "Story_AfterChapter4-AnotherWorld.csv";
+                Conversations = Func.LoadConversations(convFileName);
+                await Task.Delay((int)ConstNum.waitTime_Load);
+                Capt = Func.PlayConv(this, pictureBox_Conv, Conversations);
+            }
+            else if (ClearCheck.PlayBeforeLastStageStory[1])
+            {
+                ClearCheck.PlayBeforeLastStageStory[1] = false;
+                string convFileName = "Story_BeforeLastStage.csv";
                 Conversations = Func.LoadConversations(convFileName);
                 await Task.Delay((int)ConstNum.waitTime_Load);
                 Capt = Func.PlayConv(this, pictureBox_Conv, Conversations);
@@ -172,21 +198,37 @@ namespace unilab2024
         {
             if (e.KeyCode == Keys.M)
             {
-                for (int i = 5; i < (int)ConstNum.numWorlds; i++)
+                if (!ClearCheck.IsButtonEnabled[8, 0])
+                {
+                    for (int i = 5; i < (int)ConstNum.numWorlds - 1; i++)
+                    {
+                        for (int j = 0; j < (int)ConstNum.numStages; j++)
+                        {
+                            ClearCheck.IsNew[i, j] = false;
+                            ClearCheck.IsCleared[i, j] = true;
+                            ClearCheck.IsButtonEnabled[i, j] = true;
+                        }
+                    }
+
+                    for(int j = 0; j <= 1; j++)
+                    {
+                        ClearCheck.PlayBeforeLastStageStory[j] = true;
+                        ClearCheck.IsButtonEnabled[8, j] = true;
+                        ClearCheck.IsNew[8, j] = true;
+                    }
+
+                }
+                else if (!ClearCheck.Completed)
                 {
                     for (int j = 0; j < (int)ConstNum.numStages; j++)
-                    {   
-                        ClearCheck.IsNew[i, j] = false;
-                        ClearCheck.IsCleared[i, j] = true;
-                        ClearCheck.IsButtonEnabled[i, j] = true;
+                    {
+                        ClearCheck.IsNew[8, j] = false;
+                        ClearCheck.IsCleared[8, j] = true;
+                        ClearCheck.IsButtonEnabled[8, j] = true;
                     }
-                }
-
-                if (!ClearCheck.Completed)
-                {
+                    ClearCheck.Completed = true;
                     ClearCheck.PlayAfterAnotherWorldStory = true;
                 }
-                ClearCheck.Completed = true;
 
                 Func.CreateAnotherWorld(this);
             }

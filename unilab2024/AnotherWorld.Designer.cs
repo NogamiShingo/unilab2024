@@ -34,6 +34,7 @@
             this.button6 = new unilab2024.CustomButton();
             this.button7 = new unilab2024.CustomButton();
             this.buttonToWorldMap = new unilab2024.CustomButton();
+            this.button8 = new unilab2024.CustomButton();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -49,6 +50,7 @@
             // 
             // button5
             // 
+            this.button5.ConditionImage = null;
             this.button5.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button5.Font = new System.Drawing.Font("游ゴシック", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.button5.ForeImage = null;
@@ -62,6 +64,7 @@
             // 
             // button6
             // 
+            this.button6.ConditionImage = null;
             this.button6.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button6.Font = new System.Drawing.Font("游ゴシック", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.button6.ForeImage = null;
@@ -75,6 +78,7 @@
             // 
             // button7
             // 
+            this.button7.ConditionImage = null;
             this.button7.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button7.Font = new System.Drawing.Font("游ゴシック", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.button7.ForeImage = null;
@@ -89,23 +93,39 @@
             // buttonToWorldMap
             // 
             this.buttonToWorldMap.BackColor = System.Drawing.Color.Gray;
+            this.buttonToWorldMap.ConditionImage = null;
             this.buttonToWorldMap.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonToWorldMap.Font = new System.Drawing.Font("游ゴシック", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.buttonToWorldMap.Font = new System.Drawing.Font("游ゴシック", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.buttonToWorldMap.ForeColor = System.Drawing.Color.White;
             this.buttonToWorldMap.ForeImage = null;
-            this.buttonToWorldMap.Location = new System.Drawing.Point(50, 700);
+            this.buttonToWorldMap.Location = new System.Drawing.Point(50, 650);
             this.buttonToWorldMap.Name = "buttonToWorldMap";
-            this.buttonToWorldMap.Size = new System.Drawing.Size(200, 60);
+            this.buttonToWorldMap.Size = new System.Drawing.Size(120, 40);
             this.buttonToWorldMap.TabIndex = 3;
             this.buttonToWorldMap.Text = "魔法学校へ";
             this.buttonToWorldMap.UseVisualStyleBackColor = false;
             this.buttonToWorldMap.Click += new System.EventHandler(this.buttonToWorldMap_Click);
+            // 
+            // button8
+            // 
+            this.button8.ConditionImage = null;
+            this.button8.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button8.Font = new System.Drawing.Font("游ゴシック", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.button8.ForeImage = null;
+            this.button8.Location = new System.Drawing.Point(1096, 75);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(200, 50);
+            this.button8.TabIndex = 4;
+            this.button8.Text = "ドラゴン退治";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.buttonI_Click);
             // 
             // AnotherWorld
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1520, 861);
+            this.Controls.Add(this.button8);
             this.Controls.Add(this.buttonToWorldMap);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
@@ -127,5 +147,6 @@
         private CustomButton button6;
         private CustomButton button7;
         private CustomButton buttonToWorldMap;
+        private CustomButton button8;
     }
 }

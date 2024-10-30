@@ -85,11 +85,11 @@ namespace unilab2024
                         }
                         else
                         {
-                            //button.ForeImage = Dictionaries.Img_Button["Lock"];
-                            //button.Cursor = Cursors.No;
-                            //IsButtonToAnotherWorldEnabled = false;
-                            button.Visible = false;
-                            button.Enabled = false;
+                            button.ForeImage = Dictionaries.Img_Button["Lock"];
+                            button.Cursor = Cursors.No;
+                            IsButtonToAnotherWorldEnabled = false;
+                            //button.Visible = false;
+                            //button.Enabled = false;
                         }
                     }
                 }
@@ -99,8 +99,9 @@ namespace unilab2024
 
             for (int i = 1; i < 4; i++)
             {
-                if (ClearCheck.IsNew[i + 1, 1])
+                if (ClearCheck.PlayAfterChapterI[i])
                 {
+                    ClearCheck.PlayAfterChapterI[i] = false;
                     string convFileName = "Story_AfterChapter" + i + "-WorldMap.csv";
                     Conversations = Func.LoadConversations(convFileName);
                     await Task.Delay((int)ConstNum.waitTime_Load);
@@ -166,7 +167,7 @@ namespace unilab2024
 
                 ClearCheck.PlayAfterChapter4Story = true;
 
-                for (int i = 5; i < (int)ConstNum.numWorlds; i++)
+                for (int i = 5; i < (int)ConstNum.numWorlds-1; i++)
                 {
                     for (int j = 0; j <=1; j++)
                     {

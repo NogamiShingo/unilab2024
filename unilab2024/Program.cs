@@ -542,7 +542,7 @@ namespace unilab2024
     #region 進行状況管理
     public enum ConstNum
     {
-        numWorlds = 7+1,
+        numWorlds = 8+1,
         numStages = 3+1,
         waitTime_End = 100,
         waitTime_Load = 400
@@ -567,8 +567,18 @@ namespace unilab2024
         //0番目はWorldMapでそのワールドの中に新ステージがあるかどうか
         public static bool[,] IsNew = new bool[(int)ConstNum.numWorlds, (int)ConstNum.numStages];
 
+        //理工展仕様・1-1クリア前後
+        public static bool PlayBeforeFirstStage;
+        public static bool PlayAfterFirstStage;
+
+        //理工展仕様・1,2,3年生クリア後
+        public static bool[] PlayAfterChapterI = new bool[3+1];
+
         //卒業試験クリア時
         public static bool PlayAfterChapter4Story;
+
+        //理工展仕様・裏最終試験解放時
+        public static bool[] PlayBeforeLastStageStory = new bool[2]; //0: 一度解放したかどうか，1: ストーリーを再生するかどうか
 
         //外の世界クリア時
         public static bool Completed;
@@ -584,12 +594,42 @@ namespace unilab2024
                 for(int j = 0; j < (int)ConstNum.numStages; j++)
                 {
                     ClearCheck.IsCleared[i, j] = false;
-                    ClearCheck.IsButtonEnabled[i, j] = false;
-                    ClearCheck.IsNew[i, j] = false;
+                    //ClearCheck.IsButtonEnabled[i, j] = false;
+                    //ClearCheck.IsNew[i, j] = false;
+
+                    // 理工展仕様
+                    switch (j)
+                    {
+                        case 0:
+                        case 1:
+                            ClearCheck.IsButtonEnabled[i, j] = true;
+                            ClearCheck.IsNew[i, j] = true;
+                            break;
+                        default:
+                            ClearCheck.IsButtonEnabled[i, j] = false;
+                            ClearCheck.IsNew[i, j] = false;
+                            break;
+                    }
                 }
             }
+            ClearCheck.IsNew[1,1] = false;
 
+            for (int j = 0; j <= 1; j++)
+            {
+                ClearCheck.IsButtonEnabled[8, 0] = false;
+                ClearCheck.IsNew[8, 1] = false;
+            }
+
+            for (int i = 0; i < ClearCheck.PlayAfterChapterI.Length; i++)
+            {
+                ClearCheck.PlayAfterChapterI[i] = false;
+            }
+
+            ClearCheck.PlayBeforeFirstStage = true;
+            ClearCheck.PlayAfterFirstStage = false;
             ClearCheck.PlayAfterChapter4Story = false;
+            ClearCheck.PlayBeforeLastStageStory[0] = false;
+            ClearCheck.PlayBeforeLastStageStory[1] = false;
             ClearCheck.PlayAfterAnotherWorldStory = false;
             ClearCheck.Completed = false;
 
@@ -700,6 +740,21 @@ namespace unilab2024
             return hasNewStage;
         }
 
+        public static bool IsAnotherWorldCleared()
+        {
+            // 理工展仕様・外の世界の3つのステージがクリアされたかどうか
+            bool isAnotherWorldCleared = true;
+            for (int i = 5; i < (int)ConstNum.numWorlds - 1; i++)
+            {
+                if (!ClearCheck.IsCleared[i, 0])
+                {
+                    isAnotherWorldCleared = false;
+                    break;
+                }
+            }
+            return isAnotherWorldCleared;
+        }
+
         public static bool IsAllStageClearedInWorld(bool isWorldMap)
         {
             // WorldMapまたはAnotherWorldがすべてクリアされているかどうか
@@ -718,7 +773,7 @@ namespace unilab2024
             }
             else
             {
-                for (int i = 5; i <= 7; i++)
+                for (int i = 5; i < (int)ConstNum.numWorlds; i++)
                 {
                     if (!ClearCheck.IsCleared[i, 0])
                     {

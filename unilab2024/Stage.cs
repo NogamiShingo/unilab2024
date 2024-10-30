@@ -150,19 +150,25 @@ namespace unilab2024
             grade = Regex.Replace(stageName, @"[^0-9]", "");
             int chapter_num = int.Parse(grade) / 10;
 
-            if (_worldNumber < 4)
+            switch (_worldNumber)
             {
-                labelStageName.Text = _worldName + " " + _level + "科目め";
+                case 1:
+                case 2:
+                case 3:
+                    labelStageName.Text = _worldName + " " + _level + "科目め";
+                    break;
+                case 4:
+                case 8:
+                    labelStageName.Text = _worldName;
+                    break;
+                case 5:
+                case 6:
+                case 7:
+                    labelStageName.Text = _worldName + " ステージ" + _level;
+                    break;
             }
-            else if (_worldNumber == 4)
-            {
-                labelStageName.Text = _worldName;
-            }
-            else
-            {
-                labelStageName.Text = _worldName + " ステージ" + _level;
-                button_ToMap.Text = "ステージ選択に戻る";
-            }
+
+            if (_worldNumber >= 5) button_ToMap.Text = "ステージ選択に戻る";
 
             #region リストボックス・ボタンの設定
             //ゲーム画面の一ブロックの大きさ
@@ -452,6 +458,13 @@ namespace unilab2024
                 //button_ToMap.Location = new Point(800, 600);
                 //button_ToMap.Size = new Size(200, 50);
 
+                //理工展仕様
+                if(_worldNumber == 1 && _level == 1)
+                {
+                    ClearCheck.PlayBeforeFirstStage = false;
+                    ClearCheck.PlayAfterFirstStage = true;
+                }
+
                 ClearCheck.IsCleared[_worldNumber, _level] = true;    //クリア状況管理
                 if (_worldNumber == 4)
                 {
@@ -463,13 +476,20 @@ namespace unilab2024
                     {
                         ClearCheck.IsCleared[_worldNumber, j] = true;
                     }
-                    for (int i = _worldNumber + 1; i < (int)ConstNum.numWorlds; i++)
+                    for (int i = _worldNumber + 1; i < (int)ConstNum.numWorlds-1; i++)
                     {
                         for (int j = 0; j <= 1; j++)
                         {
                             ClearCheck.IsButtonEnabled[i, j] = true;
                             ClearCheck.IsNew[i, j] = true;
                         }
+                    }
+                }
+                else if(_worldNumber == 8)
+                {
+                    for (int j = 0; j < (int)ConstNum.numStages; j++)
+                    {
+                        ClearCheck.IsCleared[_worldNumber, j] = true;
                     }
                 }
                 else if (_level == 3)
@@ -485,6 +505,7 @@ namespace unilab2024
                                 ClearCheck.IsButtonEnabled[_worldNumber + 1, j] = true;
                                 ClearCheck.IsNew[_worldNumber + 1, j] = true;
                             }
+                            ClearCheck.PlayAfterChapterI[_worldNumber] = true;
                             break;;
                     }
                 }
@@ -498,6 +519,19 @@ namespace unilab2024
                 if (Func.HasNewStageInAllWorld())
                 {
                     button_ToMap.ConditionImage = Dictionaries.Img_Button["New"];
+                }
+
+                if (!ClearCheck.PlayBeforeLastStageStory[0])
+                {
+                    if (Func.IsAnotherWorldCleared())
+                    {
+                        for (int j = 0;j <= 1; j++)
+                        {
+                            ClearCheck.PlayBeforeLastStageStory[j] = true;
+                            ClearCheck.IsButtonEnabled[8, j] = true;
+                            ClearCheck.IsNew[8, j] = true;
+                        }
+                    }
                 }
 
                 if (!ClearCheck.Completed)
@@ -675,7 +709,8 @@ namespace unilab2024
         }
         #endregion
 
-        private int[,] CreateStage(string stageName)     //ステージ作成
+        #region ステージ作成
+        private int[,] CreateStage(string stageName)     
         {
             //string stagenum = _worldNumber + "-" + _level;
             using (StreamReader sr = new StreamReader($"Map\\{stageName}.csv"))
@@ -745,7 +780,7 @@ namespace unilab2024
                             y_goal = y;
                             if(_worldNumber > 4)
                             {
-                                int goal = 10 + _worldNumber;
+                                int goal = 12 + _worldNumber;
                                 g2.DrawImage(Dictionaries.Img_Object[goal.ToString()], placeX, placeY, cell_length, cell_length);
                             }
                             break;
@@ -761,6 +796,7 @@ namespace unilab2024
             });
             return map;
         }
+        #endregion
 
         #region 動作関連
 
@@ -953,7 +989,7 @@ namespace unilab2024
             int new_x = x + move[0][0];
             int new_y = y + move[0][1];
 
-            if (new_x <= 0 || (max_x - new_x) <= 1 || new_y <= 0 || (max_y - new_y) <= 1) return true;
+            if (new_x < 0 || (max_x - new_x) < 1 || new_y < 0 || (max_y - new_y) < 1) return true;
             else if (Map[new_x,new_y] == 2) return true;
             else
             {
@@ -1053,6 +1089,8 @@ namespace unilab2024
                 return;
             }
 
+            bool[,] IsJumpUsed = new bool[12, 12];
+
             List<int[]> move_copy = new List<int[]>(move);
             
             int jump = 0;
@@ -1077,7 +1115,7 @@ namespace unilab2024
                 {
                     int placeX = x_goal * cell_length;
                     int placeY = y_goal * cell_length;
-                    int goal = 10 + _worldNumber;
+                    int goal = 12 + _worldNumber;
                     g2.DrawImage(Dictionaries.Img_Object[goal.ToString()], placeX, placeY, cell_length, cell_length);
                 }
                 g2.DrawImage(character_me, a * cell_length - extra_length, b * cell_length - 2 * extra_length, cell_length + 2 * extra_length, cell_length + 2 * extra_length);
@@ -1156,7 +1194,7 @@ namespace unilab2024
                 //    Thread.Sleep(waittime);
                 //    continue;
                 //}
-                if(Map[x + move_copy[0][0], y + move_copy[0][1]] == 10)
+                if(jump == 0 && (Map[x + move_copy[0][0], y + move_copy[0][1]] == 10 || Map[x + move_copy[0][0], y + move_copy[0][1]] == 15 || Map[x + move_copy[0][0], y + move_copy[0][1]] == 16))
                 {
                     DrawCharacter(x, y, ref character_me);
                     move_copy.RemoveAt(0);
@@ -1164,7 +1202,7 @@ namespace unilab2024
                     Thread.Sleep(waittime);
                     continue;
                 }
-                if (Map[x , y] == 5 || Map[x, y] == 6)
+                if ((Map[x , y] == 5 || Map[x, y] == 6) && IsJumpUsed[x,y])
                 {
                     Graphics g1 = Graphics.FromImage(bmp1);
                     int placeX = x * cell_length;
@@ -1182,8 +1220,9 @@ namespace unilab2024
                 //    break;
                 //}
 
-                if ((Map[x, y] == 5) || (Map[x, y] == 6))
+                if ((Map[x, y] == 5 || Map[x, y] == 6) && (!IsJumpUsed[x,y] && jump == 0))
                 {
+                    IsJumpUsed[x, y] = true;
                     jump = Map[x, y] - 3;
                     if (Map[x, y] == 6) DoubleJump = true;
                 }
@@ -1218,7 +1257,11 @@ namespace unilab2024
                                 isWarp = true;
                             }
                         }
-                        if (isWarp) break;
+                        if (isWarp)
+                        {
+                            isWarp = false;
+                            break;
+                        }
                     }
                     //Image character_me = Dictionaries.Img_DotPic["魔法使いサンプル"];
                     //DrawCharacter(x, y, ref character_me);

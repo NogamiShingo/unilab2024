@@ -99,12 +99,12 @@
             this.buttonToAnotherWorld.BackColor = System.Drawing.Color.Gray;
             this.buttonToAnotherWorld.ConditionImage = null;
             this.buttonToAnotherWorld.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonToAnotherWorld.Font = new System.Drawing.Font("游ゴシック", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.buttonToAnotherWorld.Font = new System.Drawing.Font("游ゴシック", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.buttonToAnotherWorld.ForeColor = System.Drawing.Color.White;
             this.buttonToAnotherWorld.ForeImage = null;
-            this.buttonToAnotherWorld.Location = new System.Drawing.Point(1189, 537);
+            this.buttonToAnotherWorld.Location = new System.Drawing.Point(1250, 530);
             this.buttonToAnotherWorld.Name = "buttonToAnotherWorld";
-            this.buttonToAnotherWorld.Size = new System.Drawing.Size(200, 60);
+            this.buttonToAnotherWorld.Size = new System.Drawing.Size(120, 40);
             this.buttonToAnotherWorld.TabIndex = 3;
             this.buttonToAnotherWorld.Text = "外の世界へ";
             this.buttonToAnotherWorld.UseVisualStyleBackColor = false;
