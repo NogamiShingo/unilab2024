@@ -46,15 +46,15 @@ namespace unilab2024
                         {
                             button.ForeImage = null;
                             button.Cursor = Cursors.Hand;
-                            if (ClearCheck.IsNew[i, 0])
-                            {
-                                button.BackColor = Color.FromArgb(255, 128, 128);
-                                button.ConditionImage = Dictionaries.Img_Button["New"];
-                            }
-                            else if (ClearCheck.IsCleared[i, 0])
+                            if (ClearCheck.IsCleared[i, 0])
                             {
                                 button.BackColor = Color.FromArgb(128, 255, 255);
                                 button.ConditionImage = Dictionaries.Img_Button["Clear"];
+                            }
+                            else if (ClearCheck.IsNew[i, 0])
+                            {
+                                button.BackColor = Color.FromArgb(255, 128, 128);
+                                button.ConditionImage = Dictionaries.Img_Button["New"];
                             }
                             else
                             {

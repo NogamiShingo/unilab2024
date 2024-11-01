@@ -17,6 +17,7 @@ namespace unilab2024
             InitializeComponent();
         }
 
+        #region button押下後の処理
         private void buttonStart_Click(object sender, EventArgs e)
         {
             string worldName;
@@ -46,5 +47,6 @@ namespace unilab2024
                     break;
             }
         }
+        #endregion
     }
 }

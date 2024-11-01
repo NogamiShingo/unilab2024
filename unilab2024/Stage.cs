@@ -137,7 +137,7 @@ namespace unilab2024
         public Graphics g2;
         #endregion
 
-
+        # region 読み込み時
         private async void Stage_Load(object sender, EventArgs e)        //StageのFormの起動時処理
         {
             //button5.Visible = false;
@@ -256,6 +256,8 @@ namespace unilab2024
             await Task.Delay((int)ConstNum.waitTime_Load);
             Capt = Func.PlayConv(this,pictureBox_Conv,StartConv);
         }
+
+        #endregion
 
         #region 各コントロール機能設定
         private void listBox_Input_Click(object sender, EventArgs e)
@@ -458,91 +460,94 @@ namespace unilab2024
                 //button_ToMap.Location = new Point(800, 600);
                 //button_ToMap.Size = new Size(200, 50);
 
-                //理工展仕様
-                if(_worldNumber == 1 && _level == 1)
+                //クリア状況管理
+                if (!ClearCheck.IsCleared[_worldNumber, _level])
                 {
-                    ClearCheck.PlayBeforeFirstStage = false;
-                    ClearCheck.PlayAfterFirstStage = true;
-                }
+                    ClearCheck.IsCleared[_worldNumber, _level] = true;
+                    //理工展仕様
+                    if (_worldNumber == 1 && _level == 1)
+                    {
+                        ClearCheck.PlayBeforeFirstStage = false;
+                        ClearCheck.PlayAfterFirstStage = true;
+                    }
 
-                ClearCheck.IsCleared[_worldNumber, _level] = true;    //クリア状況管理
-                if (_worldNumber == 4)
-                {
-                    if (!ClearCheck.IsCleared[_worldNumber, 0])
+                    if (_worldNumber == 4)
                     {
-                        ClearCheck.PlayAfterChapter4Story = true;
-                    }
-                    for (int j = 0; j < (int)ConstNum.numStages; j++)
-                    {
-                        ClearCheck.IsCleared[_worldNumber, j] = true;
-                    }
-                    for (int i = _worldNumber + 1; i < (int)ConstNum.numWorlds-1; i++)
-                    {
-                        for (int j = 0; j <= 1; j++)
+                        if (!ClearCheck.IsCleared[_worldNumber, 0])
                         {
-                            ClearCheck.IsButtonEnabled[i, j] = true;
-                            ClearCheck.IsNew[i, j] = true;
+                            ClearCheck.PlayAfterChapter4Story = true;
                         }
-                    }
-                }
-                else if(_worldNumber == 8)
-                {
-                    for (int j = 0; j < (int)ConstNum.numStages; j++)
-                    {
-                        ClearCheck.IsCleared[_worldNumber, j] = true;
-                    }
-                }
-                else if (_level == 3)
-                {
-                    ClearCheck.IsCleared[_worldNumber,0] = true;
-                    switch (_worldNumber)
-                    {
-                        case 1:
-                        case 2:
-                        case 3:
+                        for (int j = 0; j < (int)ConstNum.numStages; j++)
+                        {
+                            ClearCheck.IsCleared[_worldNumber, j] = true;
+                        }
+                        for (int i = _worldNumber + 1; i < (int)ConstNum.numWorlds - 1; i++)
+                        {
                             for (int j = 0; j <= 1; j++)
                             {
-                                ClearCheck.IsButtonEnabled[_worldNumber + 1, j] = true;
-                                ClearCheck.IsNew[_worldNumber + 1, j] = true;
+                                ClearCheck.IsButtonEnabled[i, j] = true;
+                                ClearCheck.IsNew[i, j] = true;
                             }
-                            ClearCheck.PlayAfterChapterI[_worldNumber] = true;
-                            break;;
+                        }
                     }
-                }
-                else
-                {
-                    ClearCheck.IsButtonEnabled[_worldNumber, _level + 1] = true;
-                    ClearCheck.IsNew[_worldNumber, _level + 1] = true;
-                    Func.UpdateIsNew();
-                }
-
-                if (Func.HasNewStageInAllWorld())
-                {
-                    button_ToMap.ConditionImage = Dictionaries.Img_Button["New"];
-                }
-
-                if (!ClearCheck.PlayBeforeLastStageStory[0])
-                {
-                    if (Func.IsAnotherWorldCleared())
+                    else if (_worldNumber == 8)
                     {
-                        for (int j = 0;j <= 1; j++)
+                        for (int j = 0; j < (int)ConstNum.numStages; j++)
                         {
-                            ClearCheck.PlayBeforeLastStageStory[j] = true;
-                            ClearCheck.IsButtonEnabled[8, j] = true;
-                            ClearCheck.IsNew[8, j] = true;
+                            ClearCheck.IsCleared[_worldNumber, j] = true;
+                        }
+                    }
+                    else if (_level == 3)
+                    {
+                        ClearCheck.IsCleared[_worldNumber, 0] = true;
+                        switch (_worldNumber)
+                        {
+                            case 1:
+                            case 2:
+                            case 3:
+                                for (int j = 0; j <= 1; j++)
+                                {
+                                    ClearCheck.IsButtonEnabled[_worldNumber + 1, j] = true;
+                                    ClearCheck.IsNew[_worldNumber + 1, j] = true;
+                                }
+                                ClearCheck.PlayAfterChapterI[_worldNumber] = true;
+                                break; ;
+                        }
+                    }
+                    else
+                    {
+                        ClearCheck.IsButtonEnabled[_worldNumber, _level + 1] = true;
+                        ClearCheck.IsNew[_worldNumber, _level + 1] = true;
+                        Func.UpdateIsNew();
+                    }
+
+                    if (Func.HasNewStageInAllWorld())
+                    {
+                        button_ToMap.ConditionImage = Dictionaries.Img_Button["New"];
+                    }
+
+                    if (!ClearCheck.PlayBeforeLastStageStory[0])
+                    {
+                        if (Func.IsAnotherWorldCleared())
+                        {
+                            for (int j = 0; j <= 1; j++)
+                            {
+                                ClearCheck.PlayBeforeLastStageStory[j] = true;
+                                ClearCheck.IsButtonEnabled[8, j] = true;
+                                ClearCheck.IsNew[8, j] = true;
+                            }
+                        }
+                    }
+
+                    if (!ClearCheck.Completed)
+                    {
+                        if (Func.IsAllStageClearedInWorld(false))
+                        {
+                            ClearCheck.Completed = true;
+                            ClearCheck.PlayAfterAnotherWorldStory = true;
                         }
                     }
                 }
-
-                if (!ClearCheck.Completed)
-                {
-                    if (Func.IsAllStageClearedInWorld(false))
-                    {
-                        ClearCheck.Completed = true;
-                        ClearCheck.PlayAfterAnotherWorldStory = true;
-                    }
-                }
-
                 await Task.Delay((int)ConstNum.waitTime_End);
                 Capt = Func.PlayConv(this, pictureBox_Conv, EndConv);
             }
@@ -989,7 +994,7 @@ namespace unilab2024
             int new_x = x + move[0][0];
             int new_y = y + move[0][1];
 
-            if (new_x < 0 || (max_x - new_x) < 1 || new_y < 0 || (max_y - new_y) < 1) return true;
+            if (new_x <= 0 || (max_x - new_x) <= 1 || new_y <= 0 || (max_y - new_y) <= 1) return true;
             else if (Map[new_x,new_y] == 2) return true;
             else
             {
@@ -1162,6 +1167,7 @@ namespace unilab2024
                     {
                         //忍者を動かしてからミスの表示を出す
                         (x_now, y_now) = draw_move(x, y, ref move_copy);
+                        Thread.Sleep(waittime);
                         DisplayMessage("miss_out");
                         //DrawCharacter(x, y, ref character_me);
                         break;
@@ -1170,7 +1176,7 @@ namespace unilab2024
                     {
                         (x_now, y_now) = draw_move(x, y, ref move_copy);
                         Thread.Sleep(waittime);
-                        (x_now, y_now) = draw_move(x, y, ref move_copy);
+                        //(x_now, y_now) = draw_move(x, y, ref move_copy);
 
                         DisplayMessage("miss_out");
                         //DrawCharacter(x, y, ref character_me);
@@ -1194,7 +1200,7 @@ namespace unilab2024
                 //    Thread.Sleep(waittime);
                 //    continue;
                 //}
-                if(jump == 0 && (Map[x + move_copy[0][0], y + move_copy[0][1]] == 10 || Map[x + move_copy[0][0], y + move_copy[0][1]] == 15 || Map[x + move_copy[0][0], y + move_copy[0][1]] == 16))
+                if(jump == 0 && (Map[x + move_copy[0][0], y + move_copy[0][1]] == 10 || Map[x + move_copy[0][0], y + move_copy[0][1]] == 16))
                 {
                     DrawCharacter(x, y, ref character_me);
                     move_copy.RemoveAt(0);

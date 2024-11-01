@@ -96,15 +96,15 @@ namespace unilab2024
                         {
                             button.ForeImage = null;
                             button.Cursor = Cursors.Hand;
-                            if (ClearCheck.IsNew[_worldNumber, j])
-                            {
-                                button.BackColor = Color.FromArgb(255, 128, 128);
-                                button.ConditionImage = Dictionaries.Img_Button["New"];
-                            }
-                            else if (ClearCheck.IsCleared[_worldNumber, j])
+                            if (ClearCheck.IsCleared[_worldNumber, j])
                             {
                                 button.BackColor = Color.FromArgb(128, 255, 255);
                                 button.ConditionImage = Dictionaries.Img_Button["Clear"];
+                            }
+                            else if (ClearCheck.IsNew[_worldNumber, j])
+                            {
+                                button.BackColor = Color.FromArgb(255, 128, 128);
+                                button.ConditionImage = Dictionaries.Img_Button["New"];
                             }
                             else
                             {
@@ -240,6 +240,7 @@ namespace unilab2024
                         ClearCheck.IsButtonEnabled[_worldNumber + 1, j] = true;
                         ClearCheck.IsNew[_worldNumber + 1, j] = true;
                     }
+                    ClearCheck.PlayAfterChapterI[_worldNumber] = true;
                 }
                 else if( _worldNumber == 4)
                 {
@@ -247,7 +248,7 @@ namespace unilab2024
                     ClearCheck.PlayAfterChapter4Story = true;
                     
                     ClearCheck.IsCleared[4,0] = true;
-                    for (int i = 5; i < (int)ConstNum.numWorlds; i++)
+                    for (int i = 5; i < (int)ConstNum.numWorlds - 1; i++)
                     {
                         for(int j = 0; j <= 1; j++)
                         {
